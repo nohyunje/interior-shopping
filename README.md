@@ -42,6 +42,33 @@ NEXT_PUBLIC_SITE_URL=https://your-domain.example
 
 스토리지 연결 전에도 공개 페이지와 빌드는 배포할 수 있지만, 관리자에서 변경한 데이터와 업로드 파일은 영구 보존되지 않습니다.
 
+Vercel 환경에서는 이를 조용히 성공한 것처럼 처리하지 않습니다. 공개 페이지는 기본 데이터를 읽어 표시하지만 CMS 저장과 이미지 업로드 API는 영구 저장소가 연결될 때까지 HTTP `503`을 반환합니다.
+
+### 권장 영구 저장 구조
+
+- Supabase Postgres: `categories`, `projects`, `project_images`, `hotspots`, `site_settings`
+- Supabase Storage 또는 Vercel Blob: 원본 이미지, 로고, 파비콘, OG 이미지
+- DB에는 이미지 바이너리 대신 Storage의 공개 URL과 파일 메타데이터만 저장
+- 프로젝트·이미지·핫스팟 순서는 각각 `sort_order` 정수 컬럼으로 관리
+- 관리자 계정은 DB가 아닌 Vercel 환경변수 `ADMIN_ID`, `ADMIN_PASSWORD`로만 관리
+- Supabase Service Role Key는 서버 Route Handler에서만 사용하고 `NEXT_PUBLIC_` 접두사를 사용하지 않음
+
+## 배포 전 체크리스트
+
+- [x] Next.js App Router 프로덕션 빌드 통과
+- [x] `/admin` 서버 세션 검사 및 비로그인 로그인 화면
+- [x] 관리자 API와 이미지 업로드 API의 401 보호
+- [x] HttpOnly, SameSite=Strict, Production Secure 세션 쿠키
+- [x] 관리자 ID·비밀번호·세션 키 환경변수 필수화
+- [x] `.env` 및 CMS 런타임 데이터 Git 제외
+- [x] Vercel용 pnpm/Sharp 설치 설정
+- [x] `vercel.json`의 Next.js build/install 명령 확인
+- [ ] Supabase DB 연결 및 스키마 생성
+- [ ] Vercel Blob 또는 Supabase Storage 연결
+- [ ] Production 환경변수 등록
+- [ ] 실제 도메인으로 `NEXT_PUBLIC_SITE_URL` 설정
+- [ ] Preview 배포에서 로그인·저장·업로드 통합 테스트
+
 ## 검증
 
 ```bash

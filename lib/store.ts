@@ -6,6 +6,8 @@ import type { Database } from './types';
 const dataDir=path.join(process.cwd(),'data');
 const dataFile=path.join(dataDir,'cms.json');
 const defaultImage='/interior-living.png';
+const isVercel=process.env.VERCEL==='1';
+export class StorageUnavailableError extends Error{constructor(){super('Persistent CMS storage is not configured for Vercel.');this.name='StorageUnavailableError'}}
 export function hashPassword(value:string,salt=randomBytes(16).toString('hex')){return `${salt}:${scryptSync(value,salt,64).toString('hex')}`}
 export function verifyPassword(value:string,stored:string){try{const [salt,key]=stored.split(':');return timingSafeEqual(Buffer.from(key,'hex'),scryptSync(value,salt,64))}catch{return false}}
 const initial:Database={
@@ -29,8 +31,9 @@ async function ensure(){
  // Recover a valid failed save from the previous rename-based implementation.
  try{const [current,temp]=await Promise.all([fs.stat(dataFile),fs.stat(tempFile)]);if(temp.mtimeMs>=current.mtimeMs&&await isValidDatabase(tempFile)){await fs.copyFile(tempFile,dataFile);await removeIfPresent(tempFile)}}catch{/* No recovery file exists. */}
 }
-export async function readDb(){await ensure();return JSON.parse(await fs.readFile(dataFile,'utf8')) as Database}
+export async function readDb(){if(isVercel)return structuredClone(initial);await ensure();return JSON.parse(await fs.readFile(dataFile,'utf8')) as Database}
 export async function writeDb(db:Database){
+ if(isVercel)throw new StorageUnavailableError();
  // Serialize every CMS mutation so projects, images and hotspots share one safe path.
  // copyFile overwrites an existing destination on Windows, macOS and Linux without
  // relying on rename-over-existing semantics (the source of Windows EPERM errors).
