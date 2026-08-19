@@ -1,0 +1,4 @@
+import { NextResponse } from 'next/server';import { isAdmin } from '@/lib/auth';import { hashPassword,readDb,writeDb } from '@/lib/store';import type { Database } from '@/lib/types';
+export const dynamic='force-dynamic';
+export async function GET(){if(!await isAdmin())return NextResponse.json({error:'unauthorized'},{status:401});const db=await readDb();return NextResponse.json({...db,settings:{...db.settings,adminPasswordHash:''}})}
+export async function PUT(req:Request){if(!await isAdmin())return NextResponse.json({error:'unauthorized'},{status:401});const next=await req.json() as Database;const current=await readDb();next.settings.adminPasswordHash=next.settings.adminPasswordHash?hashPassword(next.settings.adminPasswordHash):current.settings.adminPasswordHash;await writeDb(next);return NextResponse.json({ok:true})}

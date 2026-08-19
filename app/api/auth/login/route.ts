@@ -1,0 +1,2 @@
+import { NextResponse } from 'next/server';import { readDb,verifyPassword } from '@/lib/store';import { createSession,sessionCookie } from '@/lib/auth';
+export async function POST(req:Request){const {id,password}=await req.json();const db=await readDb();if(id!==db.settings.adminId||!verifyPassword(password,db.settings.adminPasswordHash))return NextResponse.json({error:'아이디 또는 비밀번호가 올바르지 않습니다.'},{status:401});const res=NextResponse.json({ok:true});res.cookies.set(sessionCookie.name,createSession(),sessionCookie.options);return res}
