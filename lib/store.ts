@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { randomBytes, scryptSync, timingSafeEqual } from 'crypto';
 import type { Database } from './types';
+import { hasSupabaseConfig,readSupabaseDb,writeSupabaseDb } from './supabase';
 
 const dataDir=path.join(process.cwd(),'data');
 const dataFile=path.join(dataDir,'cms.json');
@@ -31,8 +32,9 @@ async function ensure(){
  // Recover a valid failed save from the previous rename-based implementation.
  try{const [current,temp]=await Promise.all([fs.stat(dataFile),fs.stat(tempFile)]);if(temp.mtimeMs>=current.mtimeMs&&await isValidDatabase(tempFile)){await fs.copyFile(tempFile,dataFile);await removeIfPresent(tempFile)}}catch{/* No recovery file exists. */}
 }
-export async function readDb(){if(isVercel)return structuredClone(initial);await ensure();return JSON.parse(await fs.readFile(dataFile,'utf8')) as Database}
+export async function readDb(){if(hasSupabaseConfig())return readSupabaseDb();if(isVercel)throw new StorageUnavailableError();await ensure();return JSON.parse(await fs.readFile(dataFile,'utf8')) as Database}
 export async function writeDb(db:Database){
+ if(hasSupabaseConfig())return writeSupabaseDb(db);
  if(isVercel)throw new StorageUnavailableError();
  // Serialize every CMS mutation so projects, images and hotspots share one safe path.
  // copyFile overwrites an existing destination on Windows, macOS and Linux without
