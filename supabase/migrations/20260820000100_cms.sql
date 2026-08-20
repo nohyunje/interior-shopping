@@ -80,10 +80,10 @@ begin
     raise exception 'Invalid CMS payload';
   end if;
 
-  delete from public.hotspots;
-  delete from public.project_images;
-  delete from public.projects;
-  delete from public.categories;
+  delete from public.hotspots where true;
+  delete from public.project_images where true;
+  delete from public.projects where true;
+  delete from public.categories where true;
 
   for category in select value from jsonb_array_elements(p_payload->'categories') loop
     insert into public.categories(id,name,sort_order)
@@ -113,6 +113,7 @@ $$;
 
 revoke all on function public.cms_replace(jsonb) from public,anon,authenticated;
 grant execute on function public.cms_replace(jsonb) to service_role;
+grant select on table public.categories, public.projects, public.project_images, public.hotspots, public.site_settings to service_role;
 
 insert into public.categories(id,name,sort_order) values
 ('cat-1','거실',0),('cat-2','주방',1),('cat-3','침실',2),('cat-4','홈오피스',3),('cat-5','다이닝',4),('cat-6','베란다',5),('cat-7','조명',6),('cat-8','소품',7)
