@@ -1,5 +1,6 @@
 # dependencies
 node_modules/
+.npm-cache/
 .pnpm-store/
 .pnp/
 .pnp.js
@@ -42,6 +43,7 @@ Thumbs.db
 
 # Codex working files
 work/
+ui-captures/
 public/interior-living-optimized.png
 public/interior-living.webp
 
