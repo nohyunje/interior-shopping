@@ -91,9 +91,10 @@ body{font-family:Pretendard,'Noto Sans KR',sans-serif;background:var(--ivory);co
 .site .hero-copy p{color:#2f342d;font-size:20px;font-weight:600;line-height:1.7}
 .hero-carousel{position:relative;width:100%;min-width:0}
 .site .hero-image{isolation:isolate;touch-action:pan-y;overflow:hidden}
-.hero-track{position:relative;display:block;width:100%;height:100%;overflow:hidden;border-radius:16px;background:#ebe8df}
-.hero-slide{position:absolute;inset:0;width:100%;height:100%;background:#ebe8df;opacity:0;visibility:hidden;transition:opacity .55s ease,visibility 0s linear .55s;pointer-events:none}
-.hero-slide.active{z-index:1;opacity:1;visibility:visible;transition:opacity .55s ease;pointer-events:auto}
+.hero-track{position:relative;display:flex;width:100%;height:100%;overflow:hidden;border-radius:16px;background:#ebe8df}
+.hero-slide{position:relative;flex:0 0 100%;width:100%;height:100%;background:#ebe8df;opacity:1;visibility:visible;pointer-events:auto}
+.hero-slide[aria-hidden]{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .55s ease,visibility 0s linear .55s;pointer-events:none}
+.hero-slide[aria-hidden="false"],.hero-slide.active{z-index:1;opacity:1;visibility:visible;transition:opacity .55s ease;pointer-events:auto}
 .site .hero-slide img{display:block;width:100%;height:100%;border-radius:16px;object-fit:cover}
 .site .hero-note{z-index:4;transition:opacity .2s}
 .hero-dots{position:absolute;z-index:5;right:24px;bottom:24px;display:flex;gap:7px;padding:7px 9px;border-radius:999px;background:rgba(44,44,44,.24);backdrop-filter:blur(7px)}
@@ -116,3 +117,9 @@ body{font-family:Pretendard,'Noto Sans KR',sans-serif;background:var(--ivory);co
  .card-img img,.card-1 .card-img img,.card-4 .card-img img,.detail .scene>img{object-fit:contain;background:#f0ede5}
 }
 @media(prefers-reduced-motion:reduce){.hero-slide,.hero-dots button{transition:none}}
+
+/* Hotspot-aware product thumbnails */
+.product-thumb{background:#ece9e1}
+.product-thumb img{display:block;object-fit:cover}
+.product-thumb .hotspot-crop{object-fit:cover}
+.product-thumb .product-image{object-position:center}
