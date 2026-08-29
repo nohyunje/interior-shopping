@@ -145,7 +145,7 @@ insert into public.hotspots(id,image_id,x,y,size,color,name,brand,price,descript
 on conflict (id) do nothing;
 
 insert into public.site_settings(id,site_name,logo_url,favicon_url,hero_title,hero_description,seo_title,seo_description,og_image,footer_text,service_status)
-values ('singleton','MORUM','','','마음에 드는 공간을 둘러보고','마음에 드는 가구를 바로 만나보세요.','MORUM | 공간을 쇼핑하다','공간을 둘러보고 마음에 드는 가구를 바로 만나보세요.','/interior-living.png','공간을 보고, 가구를 발견하는 새로운 방식','live')
+values ('singleton','ROOM VIEW','','','마음에 드는 공간을 둘러보고','마음에 드는 가구를 바로 만나보세요.','ROOM VIEW | 공간을 먼저 보고, 가구를 선택하다','인테리어 공간을 먼저 참고하고, 어울리는 가구와 제품을 찾아볼 수 있는 공간 큐레이션 페이지입니다.','/interior-living.png','공간을 보고, 가구를 발견하는 새로운 방식','live')
 on conflict (id) do nothing;
 
 insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types)
