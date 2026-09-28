@@ -134,3 +134,15 @@ body{font-family:Pretendard,'Noto Sans KR',sans-serif;background:var(--ivory);co
 .product-thumb img{display:block;object-fit:cover}
 .product-thumb .hotspot-crop{object-fit:cover}
 .product-thumb .product-image{object-position:center}
+
+/* Capture gestures only on handles; the surrounding image remains scrollable. */
+.edit-scene .hotspot{touch-action:none;user-select:none}
+.edit-scene .hotspot:before{content:'';position:absolute;left:50%;top:50%;width:max(38px,100%);height:max(38px,100%);transform:translate(-50%,-50%);border-radius:50%}
+.hotspot:after{pointer-events:none}
+.save-error{padding:12px 16px;margin-bottom:16px;background:#fff4f1;border:1px solid #e5bdb4;color:#8c3426;border-radius:8px;font-size:14px;line-height:1.5}
+.editor-actions>button:disabled,.settings-page .panel-head>button:disabled{opacity:.65;cursor:wait}
+@media(max-width:600px){
+ .property .form-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .property label,.property input,.property textarea{min-width:0}
+ .property input,.property textarea{width:100%}
+}
